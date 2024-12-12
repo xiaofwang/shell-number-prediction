@@ -44,12 +44,12 @@ for c in data['cms']:
 treatment = np.zeros([n_data,2],dtype=int)
 treatment[:,0] = data['alkali']
 treatment[:,1] = data['acid']
-print(type(treatment[0,0]))
+
 treatment_columns = ['alkali', 'acid']
 df2 = pd.DataFrame(data=treatment, columns=treatment_columns)
 
 # 吸附描述符：浓度、溶剂、时间、温度、重复次数
-concentration = data['concentration']
+adsorption_con = data['concentration']
 solvent = np.zeros([n_data,4])
 solvent_columns = ['water', 'ethanol', 'glycol', 'acetone']
 solvent[:,0] = data['water']
@@ -57,23 +57,24 @@ solvent[:,1] = data['ethanol']
 solvent[:,2] = data['glycol']
 solvent[:,3] = data['acetone']
 df3 = pd.DataFrame(data=solvent, columns=solvent_columns)
-time = data['time']
+adsorption_time = data['time']
 adsorption_tem = data['t']
 repeat_n = data['repeat'].astype(int)
-adsorption = concentration * adsorption_tem * time * repeat_n
+# adsorption = adsorption_con * adsorption_tem * adsorption_time * repeat_n
 
 # 退火描述符：升温速率、反应速率、保温时间
 heating_rate1 = data['heating rate1']
 reaction_rate1 = data['reaction rate1']
 annealing_time1 = data['annealing time1']
-heat1 = heating_rate1 * reaction_rate1 * annealing_time1
+# heat1 = heating_rate1 * reaction_rate1 * annealing_time1
+
 heating_rate2 = data['heating rate2']
 reaction_rate2 = data['reaction rate2']
 annealing_time2 = data['annealing time2']
-heat2 = heating_rate2 * reaction_rate2 * annealing_time2
+# heat2 = heating_rate2 * reaction_rate2 * annealing_time2
 # 壳层数
 shell_number = data['shell number'].astype(int)
-print(shell_number)
+
 for i,s in enumerate(shell_number):
     if s == 1:
         shell_number[i] = 0
@@ -85,15 +86,22 @@ reaction_rate1 = norm(reaction_rate1)
 non_zero_values = reaction_rate2[reaction_rate2 != 0]
 normalized_values = norm(non_zero_values)
 reaction_rate2.loc[reaction_rate2 != 0] = normalized_values
-adsorption = norm(adsorption)
-heat1 = norm(heat1)
-heat2 = norm(heat2)
+# adsorption = norm(adsorption)
+# heat1 = norm(heat1)
+# heat2 = norm(heat2)
 
 df4 = pd.DataFrame({
     'cms':cms,
-    'adsorption':adsorption,
-    'heat1':heat1,
-    'heat2':heat2,
+    'adsorption_con':adsorption_con,
+    'adsorption_tem':adsorption_tem,
+    'adsorption_time':adsorption_time,
+    'repeat_n':repeat_n,
+    'heating_rate1':heating_rate1,
+    'reaction_rate1':reaction_rate1,
+    'annealing_time1':annealing_time1,
+    'heating_rate2':heating_rate2,
+    'reaction_rate2':reaction_rate2,
+    'annealing_time2':annealing_time2,
     'shell_number':shell_number
 })
 
